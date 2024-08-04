@@ -34,14 +34,20 @@ def main(amount:int):
         try:
             # Get id name singer source interval
             # 处理获取来的数据
-            cur.execute("SELECT musicInfo FROM download_list WHERE position = '{}'".format(i))
-            music_info = cur.fetchall()[0]
-            dic = json.loads(music_info[0])
+            cur.execute("SELECT musicInfo,filePath FROM download_list WHERE position = '{}'".format(i))
+            data=cur.fetchall()[0]
+            filePath=data[1]
+            music_info = data[0]
+            dic = json.loads(music_info)
             music_id = dic["id"]
+            file_extension = os.path.splitext(filePath)[1]
+            dic['meta']["ext"]=file_extension
+            dic['meta']["filePath"]=filePath
             music_name = str(dic["name"].replace("'","''"))
             meta_info = json.dumps(dic["meta"])
             music_singer = dic["singer"]
-            music_source = dic["source"]
+            # music_source = dic["source"]
+            music_source = 'local'
             music_interval = dic["interval"]
 
             # Insert into new my_list_music_info_order table
